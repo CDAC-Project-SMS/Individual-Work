@@ -1,0 +1,3 @@
+1] deciding tables and databases according to client's recuierment. 
+2] performing normalization and required data cleaning and generating sample data for backend.
+3] identifying relationships between entities (one-to-one/many-to-many)
