@@ -1,3 +1,8 @@
 1] deciding tables and databases according to client's recuierment. 
 2] performing normalization and required data cleaning and generating sample data for backend.
 3] identifying relationships between entities (one-to-one/many-to-many)
+
+
+
+09-02-2024 20:08 --> version 0.1 with entity classes is done
+10-02-2024 00:55 --> basic springboot template for sms app is uploaded 
