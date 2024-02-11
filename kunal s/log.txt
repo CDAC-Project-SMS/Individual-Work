@@ -1,0 +1,2 @@
+->Create Entity classes 
+->Encountered ERROR while running spring boot app
