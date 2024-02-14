@@ -8,7 +8,7 @@
 10-02-2024 00:55 --> basic springboot template for sms app is uploaded 
 11-02-2024 17:09 --> created api end point for adding and displaying faculty 
 11-02-2024 17:15 --> tested faculty adding and displaying api encounterd a bug (org id is not reflected)
-12-02-2024 13:15 --> solved the bug (org id is not reflected)
+12-02-2024 13:15 --> solved the bug (org id is not reflected )
 
 
 
