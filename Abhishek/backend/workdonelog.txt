@@ -11,6 +11,7 @@
 12-02-2024 13:15 --> solved the bug (org id is not reflected)
 12-02-2024 17:20 --> added extra column in some tables as foreign key where ever needed
 13-02-2024 18:12 --> tested created endpoints using swagger
+14-02-2024 14:24 --> tested aading organization and adding head api using swagger encountered bug while adding head 
 
 
 
