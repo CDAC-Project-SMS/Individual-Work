@@ -7,3 +7,12 @@
 09-02-2024 20:08 --> version 0.1 with entity classes is done
 10-02-2024 00:55 --> basic springboot template for sms app is uploaded 
 11-02-2024 17:09 --> created api end point for adding and displaying faculty 
+11-02-2024 17:15 --> tested faculty adding and displaying api encounterd a bug (org id is not reflected)
+
+
+
+
+
+
+
+
