@@ -9,6 +9,8 @@
 11-02-2024 17:09 --> created api end point for adding and displaying faculty 
 11-02-2024 17:15 --> tested faculty adding and displaying api encounterd a bug (org id is not reflected)
 12-02-2024 13:15 --> solved the bug (org id is not reflected)
+12-02-2024 17:20 --> added extra column in some tables as foreign key where ever needed
+
 
 
 
