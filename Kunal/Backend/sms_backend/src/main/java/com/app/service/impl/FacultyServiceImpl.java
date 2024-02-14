@@ -1,6 +1,7 @@
 package com.app.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.app.dao.FacultyDao;
 import com.app.dao.OrganizationDao;
-import com.app.dto.faculty.FacAddDto;
+import com.app.dto.faculty.FacDto;
 import com.app.entities.primary.Faculty;
 import com.app.entities.primary.Organization;
 import com.app.service.FacultyService;
@@ -26,12 +27,20 @@ public class FacultyServiceImpl implements FacultyService{
 	private OrganizationDao orgDao;
 	
 	@Override
-	public List<Faculty> getFacultyList() {
-		return facDao.findAll();
+	public List<FacDto> getFacultyList() {
+		return facDao.findAll()
+						.stream()
+						.map((facEnt)->
+										{
+											FacDto facDto=mapper.map(facEnt, FacDto.class);
+											facDto.setOrgId(facEnt.getFacId());
+											return facDto;
+										})
+						.collect(Collectors.toList());
 	}
 	
 	@Override
-	public Faculty addFaculty(Long orgId, FacAddDto facDto) {
+	public Faculty addFaculty(Long orgId, FacDto facDto) {
 		Faculty facEnt=mapper.map(facDto, Faculty.class);
 		facEnt.setOrganization(orgDao.findById(orgId).orElseThrow());
 		return facDao.save(facEnt);

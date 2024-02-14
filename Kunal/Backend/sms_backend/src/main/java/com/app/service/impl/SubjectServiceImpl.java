@@ -1,6 +1,7 @@
 package com.app.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.app.dao.CourseDao;
 import com.app.dao.SubjectDao;
-import com.app.dto.subject.SubAddDto;
+import com.app.dto.subject.SubDto;
 import com.app.entities.secondary.Subject;
 import com.app.service.SubjectService;
 
@@ -25,11 +26,19 @@ public class SubjectServiceImpl implements SubjectService{
 	private CourseDao courseDao;
 	
 	@Override
-	public List<Subject> getSubList() {
-		return subDao.findAll();
+	public List<SubDto> getSubList() {
+		return subDao.findAll()
+						.stream()
+						.map((subEnt)->
+										{
+											SubDto subDto=mapper.map(subEnt, SubDto.class);
+											subDto.setCourseId(subEnt.getCourse().getCourseId());
+											return subDto;
+										})
+						.collect(Collectors.toList());
 	}
 	@Override
-	public Subject addSub(Long courseId, SubAddDto subDto) {
+	public Subject addSub(Long courseId, SubDto subDto) {
 		Subject subEnt=mapper.map(subDto, Subject.class);
 		subEnt.setCourse(courseDao.findById(courseId).orElseThrow());
 		return subDao.save(subEnt);

@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.dto.staff.StaffAddDto;
-import com.app.dto.staff.StaffGetDto;
+import com.app.dto.staff.StaffDto;
 import com.app.entities.primary.Staff;
 import com.app.service.StaffService;
 
@@ -26,20 +25,13 @@ public class StaffController {
 	private StaffService staffService;
 	
 	@GetMapping
-	public List<StaffGetDto> getStaffList()
+	public List<StaffDto> getStaffList()
 	{
-		return staffService.getStaffList()
-							.stream()
-							.map((staffEnt)->{
-												StaffGetDto staffDto=mapper.map(staffEnt, StaffGetDto.class);
-												staffDto.setOrgId(staffEnt.getOrganization().getOrgId());
-												return staffDto;
-											})
-							.collect(Collectors.toList());
+		return staffService.getStaffList();
 	}
 	
 	@PostMapping("/{orgId}")
-	public void addStaff(@PathVariable Long orgId,@RequestBody StaffAddDto staffDto)
+	public void addStaff(@PathVariable Long orgId,@RequestBody StaffDto staffDto)
 	{
 		Staff staffEnt= staffService.addStaff(orgId, staffDto);
 	}

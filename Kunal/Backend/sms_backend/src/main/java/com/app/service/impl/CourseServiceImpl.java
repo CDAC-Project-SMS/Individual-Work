@@ -1,6 +1,7 @@
 package com.app.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -9,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.app.dao.CourseDao;
-import com.app.dto.course.CourseAddDto;
+import com.app.dto.course.CourseDto;
 import com.app.entities.secondary.Course;
 import com.app.service.CourseService;
 
@@ -22,12 +23,19 @@ public class CourseServiceImpl implements CourseService{
 	private CourseDao courseDao;
 	
 	@Override
-	public List<Course> getCourseList() {
-		return courseDao.findAll();
+	public List<CourseDto> getCourseList() {
+		return courseDao.findAll()
+						.stream()
+						.map((courseEnt)->
+											{
+												CourseDto courseDto=mapper.map(courseEnt, CourseDto.class);
+												return courseDto;
+											})
+						.collect(Collectors.toList());
 	}
 	
 	@Override
-	public Course addCourse(CourseAddDto courseDto) {
+	public Course addCourse(CourseDto courseDto) {
 		return courseDao.save(mapper.map(courseDto, Course.class));
 	}
 }

@@ -1,6 +1,7 @@
 package com.app.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.app.dao.HeadDao;
 import com.app.dao.OrganizationDao;
-import com.app.dto.head.HeadAddDto;
+import com.app.dto.head.HeadDto;
 import com.app.entities.primary.Head;
 import com.app.entities.primary.Organization;
 import com.app.service.HeadService;
@@ -26,12 +27,20 @@ public class HeadServiceImpl implements HeadService{
 	private OrganizationDao orgDao;
 	
 	@Override
-	public List<Head> getHeadList() {
-		return headDao.findAll();
+	public List<HeadDto> getHeadList() {
+		return headDao.findAll()
+						.stream()
+						.map((headEnt)->
+										{
+											HeadDto headDto=mapper.map(headEnt, HeadDto.class);
+											headDto.setOrgId(headEnt.getOrganization().getOrgId());
+											return headDto;
+										})
+						.collect(Collectors.toList());
 	}
 	
 	@Override
-	public Head addHead(Long orgId, HeadAddDto headDto) {
+	public Head addHead(Long orgId, HeadDto headDto) {
 		Head headEnt=mapper.map(headDto, Head.class);
 		Organization orgEnt= orgDao.findById(orgId).orElseThrow();
 		orgEnt.setHead(headEnt);

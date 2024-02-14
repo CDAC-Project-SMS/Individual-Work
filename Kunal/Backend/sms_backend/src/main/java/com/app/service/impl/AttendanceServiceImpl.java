@@ -1,6 +1,7 @@
 package com.app.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.app.dao.AttendanceDao;
 import com.app.dao.ScheduleDao;
 import com.app.dao.StudentDao;
-import com.app.dto.attendance.AttendAddDto;
+import com.app.dto.attendance.AttendDto;
 import com.app.entities.secondary.Attendance;
 import com.app.service.AttendanceService;
 
@@ -28,11 +29,20 @@ public class AttendanceServiceImpl implements AttendanceService{
 	private ScheduleDao schedDao;
 	
 	@Override
-	public List<Attendance> getAttendList() {
-		return attendDao.findAll();
+	public List<AttendDto> getAttendList() {
+		return attendDao.findAll()
+						.stream()
+						.map((attendEnt)->
+											{
+												AttendDto attendDto=mapper.map(attendEnt, AttendDto.class);
+												attendDto.setStudId(attendEnt.getStudent().getStudId());
+												attendDto.setSchedId(attendEnt.getSchedule().getSchedId());
+												return attendDto;
+											})
+						.collect(Collectors.toList());
 	}
 	@Override
-	public Attendance addAttend(Long studId, Long schedId, AttendAddDto attendDto) {
+	public Attendance addAttend(Long studId, Long schedId, AttendDto attendDto) {
 		Attendance attendEnt=mapper.map(attendDto, Attendance.class);
 		attendEnt.setStudent(studDao.findById(studId).orElseThrow());
 		attendEnt.setSchedule(schedDao.findById(schedId).orElseThrow());
