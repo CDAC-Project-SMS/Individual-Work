@@ -1,0 +1,59 @@
+get subject --> tested ok
+post subject --> tested ok
+
+get organization--> tested NOT Ok it should return list of orgs
+add head to organization --> tested ok
+post organization--> tested ok
+
+get head--> tested ok
+post head--> tested ok
+
+#] get announcement--> tested ok
+#] post announcement--> tested ok(need to add orgid in get request to get announcement for perticular organization also can do it for perticular course or subject using ids)
+
+get course--> tested ok
+post course--> tested ok
+
+get faculty--> tested NOT OK (need to change orgid in facultyserviceimpl it is showing facid insted of orgid)
+post faculty--> tested ok
+
+get student--> tested ok
+post student--> tested ok
+
+get staff--> tested ok
+post staff--> tested ok
+
+get schedule--> tested ok
+post schedule--> tested ok
+
+
+get performance--> tested ok
+post performance--> tested ok
+
+get attendance--> tested ok
+post attendance--> tested ok
+
+
+get fees--> tested ok
+post fees--> tested ok
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
