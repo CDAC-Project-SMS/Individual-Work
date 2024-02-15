@@ -13,6 +13,7 @@ import com.app.dao.HeadDao;
 import com.app.dao.OrganizationDao;
 import com.app.dto.organization.OrgDto;
 import com.app.dto.organization.OrgAddHeadDto;
+import com.app.entities.primary.Head;
 import com.app.entities.primary.Organization;
 import com.app.service.OrganizationService;
 
@@ -27,8 +28,8 @@ public class OrganizationServiceImpl implements OrganizationService{
 	private HeadDao headDao;
 	
 	@Override
-	public Organization addOrganization(OrgDto org) {
-		Organization orgEnt=mapper.map(org, Organization.class);
+	public Organization addOrganization(OrgDto orgDto) {
+		Organization orgEnt=mapper.map(orgDto, Organization.class);
 		return orgDao.save(orgEnt);
 	}
 
@@ -39,7 +40,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 						.map((orgEnt)->
 										{
 											OrgDto orgDto=mapper.map(orgEnt, OrgDto.class);
-											orgDto.setHeadId(orgEnt.getHead().getHeadId());
+											orgDto.setHeadId(orgEnt.getHead()!=null?orgEnt.getHead().getHeadId():-1);
 											return orgDto;
 										})
 						.collect(Collectors.toList());
@@ -47,8 +48,27 @@ public class OrganizationServiceImpl implements OrganizationService{
 
 	@Override
 	public Organization addHead(OrgAddHeadDto orgDto) {
-		Organization orgEnt=orgDao.findById(orgDto.getOrgId()).orElseThrow();
-		orgEnt.setHead(headDao.findById(orgDto.getHeadId()).orElseThrow());
+		Organization orgEnt=orgDao.findById(orgDto.getOrgId())
+									.orElseThrow();
+		orgEnt.setHead(headDao.findById(orgDto.getHeadId())
+								.orElseThrow());
+		orgDao.save(orgEnt);
 		return orgEnt;
+	}
+
+	@Override
+	public Organization updateOrg(Long orgId,OrgDto orgDto) {
+		Organization orgOld=orgDao.findById(orgId).orElseThrow();
+		Organization orgNew=mapper.map(orgDto, Organization.class);
+		orgNew.setOrgId(orgOld.getOrgId());
+		orgNew.setHead(orgOld.getHead());
+		return orgDao.save(orgNew);
+	}
+
+	@Override
+	public void deleteOrg(Long orgId) {
+		Organization orgEnt=orgDao.findById(orgId).orElseThrow();
+		orgDao.delete(orgEnt);
+		orgDao.flush();
 	}
 }
