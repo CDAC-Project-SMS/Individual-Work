@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import {
   List,
@@ -10,14 +10,48 @@ import {
   Typography,
 } from "@mui/material";
 import Divider from "@mui/material/Divider";
+import { useDispatch } from "react-redux";
+import { changeTitle } from "../features/navBarSlice";
+import getAnnouns from "../services/announcement";
+
+//  returns object with required fields in it
+function createAnnoun(
+  announId,
+  announType,
+  announContent,
+  announTimestamp,
+  orgId
+) {
+  return { announId, announType, announContent, announTimestamp, orgId };
+}
 
 function Announcements() {
-  const [announ, setAnnoun] = useState("");
-  const [activeAnnoun, setActiveAnnoun] = useState();
+  //  this state for storing all announcements
+  const [announs, setAnnouns] = useState([]);
 
-  const handleAnnounClick = (e, id) => {
-    setAnnoun(`${e.target.textContent}`);
-    setActiveAnnoun(id);
+  //  this state for tracking current active/selected announcement
+  const [activeAnnoun, setActiveAnnoun] = useState(
+    createAnnoun("", "", "", "", "", "")
+  );
+  const dispatch = useDispatch();
+
+  //  function to load all announcements using announcement.js service which returns promise object
+  const loadAnnouns = () => {
+    getAnnouns().then((res) => {
+      setAnnouns(res);
+    });
+  };
+
+  useEffect(() => {
+    dispatch(changeTitle({ title: "Announcements" }));
+
+    //  function call for loading announcements into announs state
+    loadAnnouns();
+  }, []);
+
+  //  onclick handler for handling current active/selected announcement
+  const handleAnnounClick = (e, item) => {
+    setActiveAnnoun(item);
   };
 
   return (
@@ -42,22 +76,23 @@ function Announcements() {
           }}
         >
           <List disablePadding>
-            {[
-              1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2,
-              3, 4, 5,
-            ].map((value) => {
-              const labelValue = `Announcement ${value}`;
-
+            {/* create list with fetched announcements */}
+            {announs.map((item) => {
+              const labelValue = `${item.announType}`;
               return (
                 <>
                   <ListItem
                     disablePadding
-                    id={value}
+                    key={item.announId}
+                    id={item.announId}
                     onClick={(event) => {
-                      handleAnnounClick(event, value);
+                      handleAnnounClick(event, item);
                     }}
                     sx={{
-                      bgcolor: `${activeAnnoun !== value ? "" : "#393E46"}`,
+                      //  checking for current active announ and setting light colour to it otherwise dark
+                      bgcolor: `${
+                        activeAnnoun.announId !== item.announId ? "" : "#393E46"
+                      }`,
                     }}
                   >
                     <ListItemButton disableRipple>
@@ -81,7 +116,7 @@ function Announcements() {
           sx={{
             width: "60vw",
             height: "700px",
-            bgcolor: "white",
+            bgcolor: "whKite",
             overflow: "auto",
           }}
         >
@@ -91,11 +126,15 @@ function Announcements() {
             sx={{ fontSize: "1.8rem", fontWeight: "600" }}
             gutterBottom
           >
-            {announ}
+            {activeAnnoun.announType}
           </Typography>
-          <Typography variant="div2">
-            Here you will see content of announcement
+          <Typography
+            variant="div2"
+            sx={{ textAlign: "right", marginRight: "1rem" }}
+          >
+            {activeAnnoun.announTimestamp}
           </Typography>
+          <Typography variant="div2">{activeAnnoun.announContent}</Typography>
         </Stack>
       </Stack>
     </Paper>
