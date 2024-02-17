@@ -1,5 +1,6 @@
 package com.app.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,9 +13,18 @@ import org.springframework.stereotype.Service;
 import com.app.dao.CourseDao;
 import com.app.dao.OrganizationDao;
 import com.app.dao.StudentDao;
+import com.app.dao.SubjectDao;
+import com.app.dto.attendance.AttendDto;
+import com.app.dto.student.StudAttendDto;
 import com.app.dto.student.StudDto;
+import com.app.dto.student.StudGetPendingFeesDto;
+import com.app.dto.student.StudGetTransDto;
+import com.app.dto.student.StudPerfDto;
 import com.app.entities.primary.Organization;
 import com.app.entities.primary.Student;
+import com.app.entities.secondary.Fees;
+import com.app.entities.secondary.Performance;
+import com.app.entities.secondary.Subject;
 import com.app.service.StudentService;
 
 @Service
@@ -28,6 +38,8 @@ public class StudentServiceImpl implements StudentService{
 	private OrganizationDao orgDao;
 	@Autowired
 	private CourseDao courseDao;
+	@Autowired
+	private SubjectDao subDao;
 	
 	@Override
 	public List<StudDto> getStudentList() {
@@ -65,5 +77,67 @@ public class StudentServiceImpl implements StudentService{
 	public void deleteStud(Long studId) {
 		studDao.deleteById(studId);
 		studDao.flush();
+	}
+
+	@Override
+	public List<StudAttendDto> getAttendance(Long studId) {
+		Student studEnt=studDao.findById(studId).orElseThrow();
+		return studEnt.getAttendances()
+						.stream()
+						.map((attendEnt)->
+												{
+													StudAttendDto studAttendDto=mapper.map(attendEnt, StudAttendDto.class);
+													return studAttendDto;
+												})
+						.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<StudPerfDto> getPerformance(Long studId) {
+		Student studEnt=studDao.findById(studId).orElseThrow();
+		List<Performance> perforList=studEnt.getPerformances();
+		List<StudPerfDto> studPerfList=perforList.stream()
+													.map((perforEnt)->
+																		{
+																			StudPerfDto studPerfDto=mapper.map(perforEnt, StudPerfDto.class);
+																			Subject subject=subDao.findById(perforEnt.getSubject().getSubId()).orElseThrow();
+																			studPerfDto.setSubName(subject.getSubName());
+																			studPerfDto.setSubTotalMarks(subject.getSubTotalMarks());
+																			return studPerfDto;
+																		})
+													.collect(Collectors.toList());
+		return studPerfList;
+	}
+
+	@Override
+	public List<StudGetTransDto> getTransactions(Long studId) {
+		Student studEnt=studDao.findById(studId).orElseThrow();
+		List<StudGetTransDto> transactions=new ArrayList<>();
+		studEnt.getFees().stream()
+							.forEach((feeEnt)->
+												{
+													feeEnt.getTransactions().stream()
+																			.forEach((transEnt)->
+																									{
+																										StudGetTransDto studGetTransDto= mapper.map(transEnt, StudGetTransDto.class);
+																										studGetTransDto.setFeesType(feeEnt.getFeesType());
+																										transactions.add(studGetTransDto);
+																									});													
+												});
+		return transactions;
+	}
+
+	@Override
+	public List<StudGetPendingFeesDto> getPendingFees(Long studId) {
+		Student studEnt=studDao.findById(studId).orElseThrow();
+		List<Fees> fees=studEnt.getFees();
+		return fees.stream()
+					.map((feeEnt)->
+									{
+										StudGetPendingFeesDto feesDto=mapper.map(feeEnt, StudGetPendingFeesDto.class);
+										feesDto.setFeesPending(feeEnt.getFeesTotal()-feeEnt.getFeesPaid());
+										return feesDto;
+									})
+					.collect(Collectors.toList());
 	}
 }
