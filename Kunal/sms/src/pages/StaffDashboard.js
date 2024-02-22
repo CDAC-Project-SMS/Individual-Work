@@ -16,7 +16,7 @@ import { useState } from "react";
 import Students from "../components/Staff/Students";
 import Announcements from "../components/Staff/Announcements";
 import Courses from "../components/Staff/Courses";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 const drawerList = [
   { id: "students", label: "Students" },
@@ -28,7 +28,6 @@ function StaffDashboard() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("students");
-  const [activeComponent, setActiveComponent] = useState(<></>);
 
   const handleClose = () => {
     setOpen(false);
@@ -41,14 +40,15 @@ function StaffDashboard() {
   const handleDrawerItemClick = (event) => {
     switch (event.target.id) {
       case "students": {
-        setActiveComponent(<Students />);
+        navigate("students");
         break;
       }
       case "courses": {
-        setActiveComponent(<Courses />);
+        navigate("courses");
+        break;
       }
       case "announcements": {
-        setActiveComponent(<Announcements />);
+        navigate("announcements");
         break;
       }
     }
@@ -80,6 +80,9 @@ function StaffDashboard() {
               }}
             />
           </IconButton>
+          <Typography variant="h3" sx={{ flexGrow: "1" }}>
+            {activeTab}
+          </Typography>
           <Tooltip title="Logut">
             <IconButton
               size="large"
@@ -100,7 +103,7 @@ function StaffDashboard() {
         </Toolbar>
       </AppBar>
       <Box sx={{ width: "100%", marginTop: "4.1rem", padding: "0.9rem" }}>
-        {activeComponent}
+        <Outlet />
       </Box>
       <Drawer
         variant="temporary"

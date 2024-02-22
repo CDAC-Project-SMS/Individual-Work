@@ -10,6 +10,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import StudentDashboard from "./pages/StudentDashboard";
 import Announcements from "./components/Announcements";
+import AnnouncementsStaff from "./components/Staff/Announcements";
 import Attendance from "./components/Attendance";
 import Schedule from "./components/Schedule";
 import Grades from "./components/Grades";
@@ -18,6 +19,11 @@ import PaymentDetails from "./components/Fees/PaymentDetails";
 import PayFees from "./components/Fees/PayFees";
 import FeesMain from "./components/Fees/FeesMain";
 import StaffDashboard from "./pages/StaffDashboard";
+import Students from "./components/Staff/Students";
+import Courses from "./components/Staff/Courses";
+import EditStudent from "./components/Staff/EditStudent";
+import AddAttendance from "./components/Staff/AddAttendance";
+import AddGrades from "./components/Staff/AddGrades";
 
 function App() {
   return (
@@ -46,7 +52,16 @@ function App() {
             <Route path="pay-fees" element={<PayFees />} exact />
           </Route>
         </Route>
-        <Route path="/staff-dashboard" element={<StaffDashboard />}></Route>
+        <Route path="/staff-dashboard" element={<StaffDashboard />}>
+          <Route index element={<Students />} />
+          <Route path="students" element={<Students />}>
+            <Route path="edit-student" element={<EditStudent />} />
+            <Route path="add-attendance" element={<AddAttendance />} />
+            <Route path="add-grade" element={<AddGrades />} />
+          </Route>
+          <Route path="courses" element={<Courses />} />
+          <Route path="announcements" element={<AnnouncementsStaff />} />
+        </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
