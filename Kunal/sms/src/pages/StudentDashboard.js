@@ -4,7 +4,7 @@ import TopBar from "../components/TopBar";
 import SideMenuClosed from "../components/SideMenuClosed";
 import SideMenuExpanded from "../components/SideMenuExpanded";
 
-function Dashboard() {
+function StudentDashboard() {
   const [menuVisibility, setMenuVisibility] = useState(true);
 
   return (
@@ -15,19 +15,19 @@ function Dashboard() {
           menuVisibility={menuVisibility}
           setMenuVisibility={setMenuVisibility}
         />
-      </div>
-      <div>
-        {menuVisibility ? (
-          <SideMenuClosed />
-        ) : (
-          <SideMenuExpanded
-            menuVisibility={menuVisibility}
-            setMenuVisibility={setMenuVisibility}
-          />
-        )}
+        <div>
+          {menuVisibility ? (
+            <SideMenuClosed />
+          ) : (
+            <SideMenuExpanded
+              menuVisibility={menuVisibility}
+              setMenuVisibility={setMenuVisibility}
+            />
+          )}
+        </div>
       </div>
     </>
   );
 }
 
-export default Dashboard;
+export default StudentDashboard;
